@@ -17,8 +17,9 @@ Route::get('/', function () {
 
 
 
+
 Route::get('/login','Web\LoginController@login');           //登录
 Route::post('/login','Web\LoginController@loginDo');        //登录
 
 
-Route::get('/user/center','Web\LoginController@uCenter');       //个人中心
+Route::get('/user/center','Web\LoginController@uCenter')->middleware('check.login');       //个人中心

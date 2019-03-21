@@ -17,8 +17,11 @@ class LoginController extends Controller
      */
     public function login()
     {
-        $data = [];
-        return view('web.login');
+        $redirect = $_GET['redirect'] ?? env('SHOP_URL');
+        $data = [
+            'redirect'  => $redirect
+        ];
+        return view('web.login',$data);
     }
 
     /**
@@ -30,6 +33,7 @@ class LoginController extends Controller
 
         $u = $request->input('u_name');
         $p = $request->input('u_pass');
+        $r = $request->input('redirect') ?? env('SHOP_URL');
 
         echo 'u: '.$u;echo '</br>';
         echo 'p: '.$p;echo '</br>';
@@ -51,7 +55,7 @@ class LoginController extends Controller
                 Redis::set($redis_key_web_token,$token);
                 Redis::expire($redis_key_web_token,86400);
 
-                header("Refresh:3;url=/user/center");
+                header("Refresh:3;url=".$r);
                 echo "登录成功";
             }else{
                 die("密码不正确");
