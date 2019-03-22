@@ -23,3 +23,13 @@ Route::post('/login','Web\LoginController@loginDo');        //登录
 
 
 Route::get('/user/center','Web\LoginController@uCenter')->middleware('check.login');       //个人中心
+
+
+
+// API 接口
+Route::post('/api/login','Api\LoginController@apiLogin');
+
+
+
+
+
