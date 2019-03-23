@@ -16,6 +16,7 @@ class LoginController extends Controller
     {
         $u = $request->input('u');
         $p = $request->input('p');
+        $c = $request->input('c');          // 客户端类型 1:Android 2:Iphone 3:IPAD
 
         $u_info = Usermodel::where(['email'=>$u])->first();
 
@@ -23,12 +24,11 @@ class LoginController extends Controller
         if($u_info){
             if(password_verify($p,$u_info->pass)){
                 $uid = $u_info->uid;
-                $client = $request->input('client');    // 1 android 2 Ihone 3 IPAD
 
                 //生成token
                 $token = substr(md5($u_info->uid . mt_rand(11111,99999). time()),5,16);
 
-                $key = 'str:token:app:'.$client. ':uid:'.$uid;
+                $key = 'str:token:app:'.$c. ':uid:'.$uid;
                 Redis::set($key,$token);
                 Redis::expire($key,604800);     // 3600 * 24 * 7
 
