@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Model\Usermodel;
+use Illuminate\Support\Facades\Redis;
 
 class LoginController extends Controller
 {
@@ -21,12 +22,25 @@ class LoginController extends Controller
 
         if($u_info){
             if(password_verify($p,$u_info->pass)){
+                $uid = $u_info->uid;
+                $client = $request->input('client');    // 1 android 2 Ihone 3 IPAD
 
-                //echo '<pre>';print_r($u_info->toArray());echo '</pre>';
+                //生成token
+                $token = substr(md5($u_info->uid . mt_rand(11111,99999). time()),5,16);
+
+                $key = 'str:token:app:'.$client. ':uid:'.$uid;
+                Redis::set($key,$token);
+                Redis::expire($key,604800);     // 3600 * 24 * 7
+
+
+                //返回用户信息,处理敏感数据
+                unset($u_info->pass);
+
                 $response = [
                     'errno' => 0,
                     'msg'   => 'ok',
                     'data'  => [
+                        'token' => $token,
                         'u' => $u_info->toArray()
                     ]
                 ];
@@ -46,6 +60,7 @@ class LoginController extends Controller
             ];
         }
 
+        //echo '<pre>';print_r($response);echo '</pre>';
         echo json_encode($response);
     }
 }

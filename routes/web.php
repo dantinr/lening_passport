@@ -27,7 +27,7 @@ Route::get('/user/center','Web\LoginController@uCenter')->middleware('check.logi
 
 
 // API 接口
-Route::post('/api/login','Api\LoginController@apiLogin');
+Route::post('/api/login','Api\LoginController@apiLogin');           // APP 登录
 
 
 
